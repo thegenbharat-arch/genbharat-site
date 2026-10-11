@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GenBharat | Politics, Policy and the India Story</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:wght@600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.png"><link rel="stylesheet" href="styles.css"></head><body>
+<div class="top"><div class="w"><span id="dt"></span><span>Opinion and analysis from a nationalist viewpoint</span></div></div>
+<div class="mast"><div class="w"><a class="brand" href="index.html"><img src="logo.png" alt="" width="52" height="52"><span data-name></span></a><nav><a class="on" href="index.html">Home</a><a href="editorials.html">Editorials</a><a href="#power">Power map</a><a href="#india">India since 2014</a><a href="games.html">Games</a><a href="connect.html">Connect</a></nav></div></div>
+<div class="tk" aria-label="Latest headlines"><div class="tkin" id="tk"></div></div>
+<main class="w"><div class="lead" style="grid-template-columns:1fr"><div><span class="tag" id="lt">Editorial</span><h1 id="lh">Loading today's editorial</h1><p class="dk" id="ld"></p><p style="margin-top:14px"><a class="tag" href="editorials.html">Read today's editorial and the archive</a></p></div></div>
+<section id="news" style="padding-top:32px"><div class="sh"><h2>Today's top 10 headlines</h2><p id="nd">Updated every morning.</p></div><ol class="nl" id="nl" style="list-style:none"></ol></section>
+<section id="power"><div class="sh"><h2>Who governs where</h2><p>Governing party and the seats it holds in each state assembly, as of October 2026.</p></div>
+<div class="mapw"><div id="map"></div><div><div id="info">Click any state to see how long its government has been in power, and our reading of its record.</div><ul class="lg" id="lg"></ul></div></div>
+<p class="note">2026 results (Kerala, Tamil Nadu, West Bengal, Assam, Puducherry) per ECI figures reported by ANI, UNI and Scroll; Manipur's BJP-led government was sworn in 4 February 2026 after President's Rule. Other states show the latest assembly result. Seats shown are the leading party's own tally, not the whole alliance.</p>
+<p class="note">Points for each state are our editorial reading, not a neutral rating. Map not to scale; Delhi, Goa and Puducherry appear as dots.</p><p class="note" id="mapnote" hidden>The border file could not be loaded, so a tile map is shown instead.</p></section>
+<section id="india"><div class="sh"><h2>India then and now</h2><p>Each bar compares the earlier figure (grey) with the latest figure (saffron). Figures from the cited official bodies.</p></div><div class="sw" id="sw"><button data-m="" class="on">Compare</button><button data-m="m-then">Then only</button><button data-m="m-now">Now only</button></div><div class="st" id="st"></div>
+<p class="note">On women's safety: NCRB registered cases of crime against women rose from about 3.38 lakh (2014) to 4.45 lakh (2022). Supporters credit easier reporting, helplines and e-FIR; critics read it as worsening. We will track chargesheet and conviction rates rather than lean on one number.</p></section>
+
+<section id="yojana"><div class="sh"><h2>Yojanas that reached households</h2><p>Central schemes launched or scaled up since 2014.</p></div>
+<div class="sc"><div><h3>PM Jan Dhan</h3><p>Zero-balance bank accounts for the unbanked, now over 50 crore.</p></div><div><h3>Ujjwala</h3><p>Free LPG connections for poor women, over 10 crore households.</p></div><div><h3>Ayushman Bharat</h3><p>Health cover of up to ₹5 lakh per family per year.</p></div><div><h3>PM Awas</h3><p>Pucca homes for rural and urban poor families.</p></div>
+<div><h3>PM Kisan</h3><p>₹6,000 a year in direct transfers to farmer families.</p></div><div><h3>Jal Jeevan Mission</h3><p>Tap water connections to rural homes.</p></div><div><h3>Mudra</h3><p>Collateral-free loans for small businesses.</p></div><div><h3>Free foodgrain</h3><p>Free ration for about 80 crore people under PMGKAY.</p></div></div></section>
+
+<section id="quiz"><div class="sh"><h2>Test your India</h2><p>Eight questions on the Constitution, schemes and recent history.</p></div><div class="qz" id="qz"></div></section></main>
+<footer><div class="w"><p><span data-name></span> &middot; <a data-email></a> &middot; <a data-insta target="_blank" rel="noopener"></a></p><p style="margin-top:8px">Editorials and columns express the views of their authors. Statistics are cited from the named official sources.</p></div></footer>
+<script src="app.js"></script>
+<script src="states.js"></script>
+<script src="indiamap.js"></script>
+<script src="map.js"></script>
+<script>
+
+const D=[['GDP, nominal (US$ trillion)',2.0,4.0,'2014','2025, IMF estimate','IMF'],['National highways (km)',91287,146195,'2014','2024','MoRTH'],['Operational airports',74,160,'2014','2025','Ministry of Civil Aviation'],['UPI transactions per month (billion)',0.02,20,'2016 launch','2025','NPCI'],
+['Women in the workforce (%)',23.3,41.7,'2017-18','2023-24','PLFS, MoSPI'],['Defence exports (₹ crore)',686,23622,'2013-14','2024-25','Ministry of Defence'],['AIIMS institutes',7,23,'2014','approved by 2025','Ministry of Health'],['Maoist-affected districts (fewer is better)',126,38,'2013','2024','Ministry of Home Affairs']];
+const f=n=>n>=1000?n.toLocaleString('en-IN'):n;
+document.getElementById('st').innerHTML=D.map(([l,a,b,ya,yb,src])=>{const mx=Math.max(a,b),pa=Math.max(a/mx*100,2),pb=Math.max(b/mx*100,2);
+return`<div class="row"><b>${l}</b><div class="bar"><i class="bo" style="width:${pa}%;background:#64748B"></i></div><div class="bar"><i class="bn" style="width:${pb}%;background:var(--ac)"></i></div><div class="bl"><span>${ya}: <em>${f(a)}</em> &nbsp; ${yb}: <em>${f(b)}</em></span><span>${src}</span></div></div>`}).join('');
+const Q=[['Which Article of the Constitution abolishes untouchability?',['Article 14','Article 17','Article 21','Article 32'],1,'Article 17 abolishes untouchability and forbids its practice in any form.'],
+['In which year was UPI launched?',['2012','2014','2016','2019'],2,'NPCI launched UPI in April 2016.'],
+['How many Lok Sabha seats make a simple majority?',['250','272','273','300'],1,'The House has 543 elected seats, so 272 is the majority mark.'],
+['When did the Constitution of India come into effect?',['15 August 1947','26 November 1949','26 January 1950','2 October 1950'],2,'It was adopted on 26 November 1949 and came into force on 26 January 1950.'],
+['Which scheme gave free LPG connections to poor households?',['Ujjwala Yojana','Jan Dhan Yojana','Mudra Yojana','Awas Yojana'],0,'Pradhan Mantri Ujjwala Yojana, launched in 2016.'],
+['What share of seats does the Nari Shakti Vandan Adhiniyam reserve for women?',['One-fourth','One-third','One-half','Twenty percent'],1,'The 2023 Act reserves one-third of seats in the Lok Sabha and state assemblies.'],
+['Chandrayaan-3 landed near which region of the Moon in 2023?',['Equator','North pole','South pole','Far side centre'],2,'It landed near the lunar south pole on 23 August 2023.'],
+['When was GST rolled out nationwide?',['1 April 2015','1 July 2017','1 April 2018','1 January 2019'],1,'GST came into effect on 1 July 2017.']];
+const qz=document.getElementById('qz');let i=0,sc=0;
+function render(){if(i>=Q.length)return end();const[q,o,a,e]=Q[i];qz.innerHTML=`<div class="pg"><i style="width:${i/Q.length*100}%"></i></div><p class="note" style="margin:0 0 6px">Question ${i+1} of ${Q.length}</p><h3>${q}</h3>`+o.map((t,k)=>`<button class="op" data-k="${k}">${t}</button>`).join('')+'<div id="fb"></div>';
+qz.querySelectorAll('.op').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;qz.querySelectorAll('.op').forEach(x=>{x.disabled=true;if(+x.dataset.k===a)x.classList.add('ok')});if(k===a)sc++;else b.classList.add('no');
+document.getElementById('fb').innerHTML=`<p class="ex">${k===a?'Correct. ':'Not quite. '}${e}</p><button class="bt" id="nx">${i+1<Q.length?'Next question':'See my score'}</button>`;document.getElementById('nx').onclick=()=>{i++;render()}})}
+function end(){const msg=sc>=7?'Well read. You know your India.':sc>=4?'A solid base. The yojanas and history sections will fill the gaps.':'Start with the sections above, then try again.';
+qz.innerHTML=`<div class="pg"><i style="width:100%"></i></div><h3>You scored ${sc} out of ${Q.length}</h3><p class="ex">${msg}</p><p class="ex">Add your name and email to join our list. This is optional.</p><input id="qn" placeholder="Name"><input id="qe" type="email" placeholder="Email"><br><button class="bt" id="qs">Save my score</button> <button class="op" style="display:inline-block;width:auto" id="qr">Retake</button><p class="ex" id="qm"></p>`;
+document.getElementById('qr').onclick=()=>{i=0;sc=0;render()};
+document.getElementById('qs').onclick=async()=>{const n=qn.value.trim(),e=qe.value.trim();if(!n||!e){qm.textContent='Enter both a name and an email to save.';return}
+try{await sendSheet({type:'quiz',name:n,email:e,score:sc,archetype:'Quiz '+sc+'/'+Q.length});qm.textContent='Saved. Thank you.'}catch(x){qm.textContent='Could not save. Please try again.'}}}
+render();
+$('sw').onclick=e=>{const m=e.target.dataset.m;if(m===undefined)return;[...$('sw').children].forEach(b=>b.classList.toggle('on',b===e.target));$('st').className='st '+m};
+getJSON('data/news.json').then(d=>{const tk=d.items.map(i=>`<span>${esc(i.h)} <em>${esc(i.s)}</em></span>`).join('');$('tk').innerHTML=tk+tk;$('nl').innerHTML=d.items.map(i=>`<li><b>${esc(i.h)}</b><small>Source: ${esc(i.s)}</small></li>`).join('');$('nd').textContent='Updated '+new Date(d.date).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})});
+getJSON('data/editorials.json').then(a=>{const e=a[0];$('lt').textContent=e.tag;$('lh').textContent=e.h;$('ld').textContent=e.dk}).catch(()=>{});
+</script></body></html>

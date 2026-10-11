@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editorials | GenBharat</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:wght@600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.png"><link rel="stylesheet" href="styles.css"></head><body>
+<div class="top"><div class="w"><span id="dt"></span><span>Opinion and analysis from a nationalist viewpoint</span></div></div>
+<div class="mast"><div class="w"><a class="brand" href="index.html"><img src="logo.png" alt="" width="52" height="52"><span data-name></span></a><nav><a href="index.html">Home</a><a class="on" href="editorials.html">Editorials</a><a href="index.html#power">Power map</a><a href="index.html#india">India since 2014</a><a href="games.html">Games</a><a href="connect.html">Connect</a></nav></div></div>
+<main class="w"><div class="sh" style="margin-top:36px"><h2>Editorials and columns</h2><p>A new editorial every morning. All pieces are opinion; facts come from the day's headlines.</p></div><div class="ed" id="ed"></div></main>
+<footer><div class="w"><p><span data-name></span> &middot; <a data-email></a> &middot; <a data-insta target="_blank" rel="noopener"></a></p><p style="margin-top:8px">Editorials and columns express the views of their authors.</p></div></footer>
+<script src="app.js"></script><script>getJSON("data/editorials.json").then(a=>{const d=a[0].date,F=e=>`<p style="font-family:Newsreader,serif;font-size:1.2rem;color:#DCE3F0;margin-bottom:12px">${esc(e.dk)}</p><p style="font-family:Newsreader,serif;font-size:1.12rem;line-height:1.7;color:#DCE3F0">${esc(e.b)}</p>`;
+$("ed").innerHTML=a.map(e=>`<article><span class="tag">${esc(e.tag)}, ${esc(e.date)}</span><h2>${esc(e.h)}</h2><p class="by">Editorial desk</p>${e.date===d?F(e):`<details><summary>Read the editorial</summary><p>${esc(e.dk)}</p><p>${esc(e.b)}</p></details>`}</article>`).join("")}).catch(()=>$("ed").textContent="Could not load editorials.")</script></body></html>
