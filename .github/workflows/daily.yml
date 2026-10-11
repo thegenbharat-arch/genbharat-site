@@ -1,0 +1,19 @@
+name: Daily update
+on:
+  schedule: [{cron: "30 0 * * *"}]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/update.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-2.5-flash
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AUTO_PUBLISH: "true"
+      - run: |
+          git config user.name "daily-bot"; git config user.email "bot@users.noreply.github.com"
+          git add data; git diff --cached --quiet || (git commit -m "Daily update" && git push)
