@@ -1,8 +1,11 @@
 """Daily job: pull headlines from RSS feeds, then draft four editorials with a free or paid AI key."""
-import json, os, re, sys, datetime, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, sys, datetime, urllib.request, urllib.error, xml.etree.ElementTree as ET
 FEEDS=[("The Hindu","https://www.thehindu.com/news/national/feeder/default.rss"),
 ("NDTV News","https://feeds.feedburner.com/ndtvnews-top-stories"),
-("The Indian Express","https://indianexpress.com/section/india/feed/")]
+("The Indian Express","https://indianexpress.com/section/india/feed/"),
+("Times of India","https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"),
+("Hindustan Times","https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml"),
+("Mint","https://www.livemint.com/rss/news")]
 def get(u,data=None,h=None):
     r=urllib.request.Request(u,data=data,headers=h or {"User-Agent":"Mozilla/5.0"});return urllib.request.urlopen(r,timeout=60).read()
 items=[]
@@ -26,14 +29,38 @@ prompt=("You write the daily editorials for a nationalist, pro-BJP Indian opinio
 "\n\nWrite FOUR editorials on four different stories from these headlines, each arguing the pro-government, pro-order, pro-development case. Rules: this is clearly OPINION; "
 "state no facts beyond what the headlines say; invent no quotes, numbers or sources; do not accuse any named person of a crime; argue against ideas and tactics, not people's character; where a fair counter-argument exists, acknowledge it in one clause. "
 'Reply with JSON only, a list of four objects: [{"h":"headline under 14 words","dk":"one-sentence standfirst","b":"body, 110-160 words, plain paragraphs"}]')
+def gemini(prompt,key):
+    base="https://generativelanguage.googleapis.com/v1beta/"
+    hd={"x-goog-api-key":key,"content-type":"application/json"}
+    body=json.dumps({"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"responseMimeType":"application/json"}}).encode()
+    def discover():
+        try:
+            ms=json.loads(get(base+"models?pageSize=200",None,hd)).get("models",[])
+        except Exception as e:
+            print("could not list models:",repr(e)[:120]);return
+        ok=[m["name"].split("/")[-1] for m in ms if "generateContent" in m.get("supportedGenerationMethods",[]) and "flash" in m["name"]]
+        bad=("lite","image","tts","live","audio","vision","robotics","computer","embedding")
+        good=[m for m in ok if not any(x in m for x in bad)] or ok
+        def ver(m):
+            v=re.search(r"gemini-(\d+(?:\.\d+)?)",m);return (float(v.group(1)) if v else 0,-len(m))
+        yield from sorted(good,key=ver,reverse=True)[:4]
+    def cands():
+        yield os.environ.get("GEMINI_MODEL");yield "gemini-flash-latest";yield from discover()
+    tried=[]
+    for m in cands():
+        if not m or m in tried:continue
+        tried.append(m)
+        try:
+            r=json.loads(get(base+"models/%s:generateContent"%m,body,hd))
+            parts=r["candidates"][0]["content"]["parts"]
+            print("used model",m);return "".join(p.get("text","") for p in parts if not p.get("thought"))
+        except urllib.error.HTTPError as e:
+            print("model",m,"failed with HTTP",e.code)
+            if e.code not in (400,404,429,500,503):raise
+    raise RuntimeError("no Gemini model worked: "+", ".join(tried))
 def ask(prompt):
     g=os.environ.get("GEMINI_API_KEY");a=os.environ.get("ANTHROPIC_API_KEY")
-    if g:
-        m=os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash"
-        r=json.loads(get("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent"%m,
-          json.dumps({"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"responseMimeType":"application/json"}}).encode(),
-          {"x-goog-api-key":g,"content-type":"application/json"}))
-        return r["candidates"][0]["content"]["parts"][0]["text"]
+    if g:return gemini(prompt,g)
     if a:
         r=json.loads(get("https://api.anthropic.com/v1/messages",json.dumps({"model":"claude-sonnet-5-5","max_tokens":2500,"messages":[{"role":"user","content":prompt}]}).encode(),
           {"x-api-key":a,"anthropic-version":"2023-06-01","content-type":"application/json"}))
